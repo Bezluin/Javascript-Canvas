@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Javascript Canvas</title>
+    <style>
+    canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+    }
+    </style>
+</head>
+<body>
+    <canvas id="draw" width="800" height="500"></canvas>
+    <div style="position:absolute;top:12%;left:90%;">Color Picker</div>
+    <div style="position:absolute;top:15%;left:95%;width:10px;height:10px;background:green;" id="green" onclick="colorPicker(this)"></div>
+    <div style="position:absolute;top:15%;left:96%;width:10px;height:10px;background:blue;" id="blue" onclick="colorPicker(this)"></div>
+    <div style="position:absolute;top:15%;left:97%;width:10px;height:10px;background:red;" id="red" onclick="colorPicker(this)"></div>
+    <div style="position:absolute;top:15%;left:98%;width:10px;height:10px;background:yellow;" id="yellow" onclick="colorPicker(this)"></div>
+
+
+    <script>
+    var canvas = document.querySelector('#draw');
+    const width = 800, height = 500;
+    //define ctx
+    let ctx = canvas.getContext('2d');
+
+    canvas.width = width;
+    canvas.height = height;
+    //ctx.lineJoin = 'round';
+    //ctx.lineCap = 'round';
+
+    let lastX = undefined;
+    let lastY = undefined;
+
+    //variable for storing radius of arc
+    let r = 3; //defalt value
+    //variable for pen color
+    let c = 'red'
+
+
+    function draw(e) {
+    if (lastX !== undefined && lastY !== undefined) {
+        ctx.beginPath();
+        ctx.arc(lastX, lastY, r, 0, 2 * Math.PI);
+        ctx.fillStyle = c;
+        ctx.fill();
+      }
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+      }
+
+    function startdraw() {
+      canvas.addEventListener('mousemove', draw);
+    }
+
+    function colorPicker(e) {
+      console.log(e.id);
+      switch (e.id) {
+        case 'blue': // blue
+            c = 'blue'; break;
+        case 'red': // red
+            c = 'red'; break;
+        case 'yellow': // yellow
+            c = 'yellow'; break;
+        case 'green': //green
+            c = 'green'; break;
+      }
+    }
+
+    canvas.addEventListener('mousedown', startdraw);
+    //canvas.addEventListener('mousemove', draw);
+
+
+
+    document.addEventListener('keydown', (e) => {
+    console.log(e.keyCode);
+    switch (e.keyCode) {
+    case 66: // blue
+        c = 'blue'; break;
+    case 82: // red
+        c = 'red'; break;
+    case 89: // yellow
+        c = 'yellow'; break;
+    case 71: // green
+        c = 'green'; break;
+    case 38: // up key to increase radius
+        r += 1; break;
+    case 40: // down key to decrease radius
+        if (r > 1) {
+        r -= 1; break;
+      }
+        else {
+          break;
+        }
+    case 32: // spacebar to clear canvas
+        ctx.clearRect(0, 0, width, height); break;
+    }
+});
+
+    </script>
+</body>
+</html>
