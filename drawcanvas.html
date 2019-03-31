@@ -12,6 +12,7 @@
     }
     </style>
 </head>
+
 <body>
     <canvas id="draw" width="800" height="500"></canvas>
     <div style="position:absolute;top:12%;left:90%;">Color Picker</div>
@@ -29,9 +30,7 @@
 
     canvas.width = width;
     canvas.height = height;
-    //ctx.lineJoin = 'round';
-    //ctx.lineCap = 'round';
-
+    // variables for storing the last x, y coordinates of the mouse
     let lastX = undefined;
     let lastY = undefined;
 
@@ -40,7 +39,7 @@
     //variable for pen color
     let c = 'red'
 
-
+    // function for drawing
     function draw(e) {
     if (lastX !== undefined && lastY !== undefined) {
         ctx.beginPath();
@@ -48,13 +47,17 @@
         ctx.fillStyle = c;
         ctx.fill();
       }
-        [lastX, lastY] = [e.offsetX, e.offsetY];
+        [lastX, lastY] = [e.clientX, e.clientY];
       }
-
+    // function for assigning the draw function to movement of mouse
     function startdraw() {
-      canvas.addEventListener('mousemove', draw);
+      //if ('mousedown') {canvas.addEventListener('mousemove', draw);}
+      //if ('touchstart' || 'mousedown') {canvas.addEventListener('mousemove', draw); console.log('touch');}
+      if ('pointerdown') {canvas.addEventListener('pointermove', draw);}
+      //canvas.addEventListener('mousemove', draw);
+      //canvas.addEventListener('touchmove', draw);
     }
-
+    // function for making color picker work
     function colorPicker(e) {
       console.log(e.id);
       switch (e.id) {
@@ -68,11 +71,10 @@
             c = 'green'; break;
       }
     }
-
-    canvas.addEventListener('mousedown', startdraw);
-    //canvas.addEventListener('mousemove', draw);
-
-
+    // event listener for initiating the startdraw function when mouse is clicked
+    //canvas.addEventListener('mousedown', startdraw);
+    //canvas.addEventListener('touchstart', startdraw);
+    canvas.addEventListener('pointerdown', startdraw);
 
     document.addEventListener('keydown', (e) => {
     console.log(e.keyCode);
