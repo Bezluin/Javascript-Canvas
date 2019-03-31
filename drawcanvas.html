@@ -28,8 +28,8 @@
     //define ctx
     let ctx = canvas.getContext('2d');
 
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = window.innerWidth * 0.8;
+    canvas.height = window.innerHeight * 0.8;
     // variables for storing the last x, y coordinates of the mouse
     let lastX = undefined;
     let lastY = undefined;
@@ -49,14 +49,29 @@
       }
         [lastX, lastY] = [e.clientX, e.clientY];
       }
+
+    //function for drawing using touch
+    function touchdraw(e) {
+      if (lastX !== undefined && lastY !== undefined) {
+          ctx.beginPath();
+          ctx.arc(lastX, lastY, r, 0, 2 * Math.PI);
+          ctx.fillStyle = c;
+          ctx.fill();
+        }
+          [lastX, lastY] = [e.touches[0].screenX, e.touches[0].screenY];
+    }
+
+
     // function for assigning the draw function to movement of mouse
     function startdraw() {
-      //if ('mousedown') {canvas.addEventListener('mousemove', draw);}
-      //if ('touchstart' || 'mousedown') {canvas.addEventListener('mousemove', draw); console.log('touch');}
-      if ('pointerdown') {canvas.addEventListener('pointermove', draw);}
-      //canvas.addEventListener('mousemove', draw);
-      //canvas.addEventListener('touchmove', draw);
+      canvas.addEventListener('mousemove', draw);
     }
+    // function for assigning the touchdraw function to movement of touch
+    function startdrawtouch() {
+      canvas.addEventListener('touchmove', touchdraw);
+      console.log('touch');
+    }
+
     // function for making color picker work
     function colorPicker(e) {
       console.log(e.id);
@@ -72,9 +87,8 @@
       }
     }
     // event listener for initiating the startdraw function when mouse is clicked
-    //canvas.addEventListener('mousedown', startdraw);
-    //canvas.addEventListener('touchstart', startdraw);
-    canvas.addEventListener('pointerdown', startdraw);
+    canvas.addEventListener('mousedown', startdraw);
+    canvas.addEventListener('touchstart', startdrawtouch);
 
     document.addEventListener('keydown', (e) => {
     console.log(e.keyCode);
@@ -97,7 +111,7 @@
           break;
         }
     case 32: // spacebar to clear canvas
-        ctx.clearRect(0, 0, width, height); break;
+        ctx.clearRect(0, 0, window.innerWidth * 0.8, window.innerHeight * 0.8); break;
     }
 });
 
