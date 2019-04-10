@@ -14,53 +14,38 @@
 </head>
 
 <body>
-    <canvas id="draw" width="800" height="500"></canvas>
-    <div style="position:absolute;top:12%;left:90%;">Color Picker</div>
-    <div style="position:absolute;top:15%;left:95%;width:10px;height:10px;background:green;" id="green" onclick="colorPicker(this)"></div>
-    <div style="position:absolute;top:15%;left:96%;width:10px;height:10px;background:blue;" id="blue" onclick="colorPicker(this)"></div>
-    <div style="position:absolute;top:15%;left:97%;width:10px;height:10px;background:red;" id="red" onclick="colorPicker(this)"></div>
-    <div style="position:absolute;top:15%;left:98%;width:10px;height:10px;background:yellow;" id="yellow" onclick="colorPicker(this)"></div>
+    <canvas id="draw"></canvas>
 
+    <input name="Color Picker" type="color" onchange = "colorPicker(this)">
 
     <script>
     var canvas = document.querySelector('#draw');
-    const width = 800, height = 500;
     //define ctx
     let ctx = canvas.getContext('2d');
 
     canvas.width = window.innerWidth * 0.8;
     canvas.height = window.innerHeight * 0.8;
-    // variables for storing the last x, y coordinates of the mouse
-    let lastX = undefined;
-    let lastY = undefined;
 
     //variable for storing radius of arc
-    let r = 3; //defalt value
+    let r = 3; //default value
     //variable for pen color
     let c = 'red'
 
-    // function for drawing
+    // function for drawing with mouse
     function draw(e) {
-    if (lastX !== undefined && lastY !== undefined) {
         ctx.beginPath();
-        ctx.arc(lastX, lastY, r, 0, 2 * Math.PI);
+        ctx.arc(e.clientX, e.clientY, r, 0, 2 * Math.PI);
         ctx.fillStyle = c;
         ctx.fill();
-      }
-        [lastX, lastY] = [e.clientX, e.clientY];
       }
 
     //function for drawing using touch
     function touchdraw(e) {
-      if (lastX !== undefined && lastY !== undefined) {
           ctx.beginPath();
-          ctx.arc(lastX, lastY, r, 0, 2 * Math.PI);
+          ctx.arc(e.touches[0].screenX, e.touches[0].screenY, r, 0, 2 * Math.PI);
           ctx.fillStyle = c;
           ctx.fill();
-        }
-          [lastX, lastY] = [e.touches[0].screenX, e.touches[0].screenY];
     }
-
 
     // function for assigning the draw function to movement of mouse
     function startdraw() {
@@ -72,19 +57,18 @@
       console.log('touch');
     }
 
+    // function for oreientation change events
+    canvas.addEventListener("orientationchange", orientationclear);
+
+    function orientationclear() {
+        console.log("device orientation changed");
+        ctx.clearRect(0, 0, window.innerWidth * 0.8, window.innerHeight * 0.8);
+    }
+
     // function for making color picker work
     function colorPicker(e) {
       console.log(e.id);
-      switch (e.id) {
-        case 'blue': // blue
-            c = 'blue'; break;
-        case 'red': // red
-            c = 'red'; break;
-        case 'yellow': // yellow
-            c = 'yellow'; break;
-        case 'green': //green
-            c = 'green'; break;
-      }
+      c = e.value;
     }
     // event listener for initiating the startdraw function when mouse is clicked
     canvas.addEventListener('mousedown', startdraw);
